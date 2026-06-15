@@ -54,6 +54,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const entry = document.createElement('div');
     entry.className = 'prior-record-entry';
     entry.dataset.index = index;
+
+    // Generate year options from 2026 down to 1990
+    let yearOptions = '<option value="" disabled selected>연도 선택</option>';
+    for (let y = 2026; y >= 1990; y--) {
+      yearOptions += `<option value="${y}">${y}년</option>`;
+    }
+
     entry.innerHTML = `
       <div class="entry-label">
         <span class="entry-badge">${ordinal}</span>
@@ -62,8 +69,9 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="prior-fields-row">
         <div class="input-field">
           <label for="priorYear_${index}">적발 연도</label>
-          <input type="number" id="priorYear_${index}" name="priorYear_${index}"
-                 placeholder="예: 2020" min="1990" max="2026" />
+          <select id="priorYear_${index}" name="priorYear_${index}">
+            ${yearOptions}
+          </select>
         </div>
         <div class="input-field">
           <label for="priorDisposition_${index}">당시 처분</label>
@@ -249,9 +257,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      // For the prior records entries — validate each visible entry individually
-      // We don't mark the whole fieldset invalid, just check year entries
-      // (lenient: only require year if prior records are visible)
+      // Check if all dropdowns are selected (not empty)
+      selects.forEach(select => {
+        if (select.value === "") {
+          group.classList.add('invalid');
+          valid = false;
+        }
+      });
 
       textInputs.forEach(input => {
         if (input.id === 'userName' && !input.value.trim()) {
