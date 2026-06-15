@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>오정국 변호사 | 음주운전 처벌 수위 AI 예측 시스템</title>
+  <meta name="description" content="음주운전 적발 상황과 양형 조건을 입력하면 실시간 예상 형량과 방어 전략을 분석합니다. 오정국 변호사 사무실 제공." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Background animated particles -->
+  <div class="bg-particles" aria-hidden="true">
+    <div class="particle p1"></div>
+    <div class="particle p2"></div>
+    <div class="particle p3"></div>
+    <div class="particle p4"></div>
+    <div class="particle p5"></div>
+  </div>
+
+  <main class="main-container">
+    <!-- Header / Title Area -->
+    <header class="page-header">
+      <div class="header-badge">
+        <span class="badge-icon">⚖️</span>
+        <span class="badge-text">법률 AI 분석</span>
+      </div>
+      <h1 class="main-title">오정국 변호사의<br /><span class="title-accent">5초 음주운전 처벌 수위</span> 예측 시스템</h1>
+      <p class="sub-title">현재 단속 상황과 양형 조건을 입력하시면<br />실시간 예상 형량과 방어 전략을 분석합니다.</p>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="progress-wrapper" id="progressWrapper">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 25%"></div>
+      </div>
+      <div class="progress-steps">
+        <div class="progress-step active" data-step="1">
+          <div class="step-dot"><span>1</span></div>
+          <span class="step-label">단속 정황</span>
+        </div>
+        <div class="progress-step" data-step="2">
+          <div class="step-dot"><span>2</span></div>
+          <span class="step-label">전과 여부</span>
+        </div>
+        <div class="progress-step" data-step="3">
+          <div class="step-dot"><span>3</span></div>
+          <span class="step-label">사고·직업</span>
+        </div>
+        <div class="progress-step" data-step="4">
+          <div class="step-dot"><span>4</span></div>
+          <span class="step-label">분석 요청</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card Container -->
+    <div class="card-container" id="cardContainer">
+
+      <!-- ==================== STEP 1 ==================== -->
+      <section class="step-card active" id="step1">
+        <div class="step-header">
+          <span class="step-number">STEP 01</span>
+          <h2 class="step-title">단속 및 측정 정황</h2>
+          <p class="step-desc">적발 당시 상황을 정확히 선택해 주세요.</p>
+        </div>
+
+        <!-- Q1 -->
+        <fieldset class="question-group">
+          <legend class="q-label"><span class="q-num">Q1</span> 적발 당시 혈중알코올농도는?</legend>
+          <div class="radio-grid">
+            <label class="radio-card">
+              <input type="radio" name="bac" value="low" />
+              <div class="radio-body">
+                <span class="radio-icon">🟢</span>
+                <span class="radio-text">0.03~0.08%<br/><small>미만</small></span>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="bac" value="mid" />
+              <div class="radio-body">
+                <span class="radio-icon">🟡</span>
+                <span class="radio-text">0.08~0.20%<br/><small>미만</small></span>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="bac" value="high" />
+              <div class="radio-body">
+                <span class="radio-icon">🔴</span>
+                <span class="radio-text">0.20%<br/><small>이상</small></span>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="bac" value="refused" />
+              <div class="radio-body">
+                <span class="radio-icon">⛔</span>
+                <span class="radio-text">측정<br/><small>거부</small></span>
+              </div>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- Q2 -->
+        <fieldset class="question-group">
+          <legend class="q-label"><span class="q-num">Q2</span> 측정 전 물로 입을 헹굴 기회를 받았나요?</legend>
+          <div class="radio-row">
+            <label class="radio-pill">
+              <input type="radio" name="rinse" value="yes" />
+              <span>네</span>
+            </label>
+            <label class="radio-pill">
+              <input type="radio" name="rinse" value="no" />
+              <span>아니요</span>
+            </label>
+            <label class="radio-pill">
+              <input type="radio" name="rinse" value="unknown" />
+              <span>기억 안 남</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- Q3 -->
+        <fieldset class="question-group">
+          <legend class="q-label"><span class="q-num">Q3</span> 마지막 음주 후 측정까지 20분이 지났나요?</legend>
+          <div class="radio-row">
+            <label class="radio-pill">
+              <input type="radio" name="wait20" value="passed" />
+              <span>20분 지남</span>
+            </label>
+            <label class="radio-pill">
+              <input type="radio" name="wait20" value="notpassed" />
+              <span>20분 안 됨</span>
+            </label>
+            <label class="radio-pill">
+              <input type="radio" name="wait20" value="unknown" />
+              <span>모름</span>
+            </label>
+          </div>
+        </fieldset>
+      </section>
+
+      <!-- ==================== STEP 2 ==================== -->
+      <section class="step-card" id="step2">
+        <div class="step-header">
+          <span class="step-number">STEP 02</span>
+          <h2 class="step-title">전과 및 누범 여부</h2>
+          <p class="step-desc">과거 전력과 현재 법적 상태를 확인합니다.</p>
+        </div>
+
+        <!-- Q4 -->
+        <fieldset class="question-group">
+          <legend class="q-label"><span class="q-num">Q4</span> 과거 음주운전 전력이 있나요?</legend>
+          <div class="radio-row">
+            <label class="radio-pill">
+              <input type="radio" name="priors" value="none" />
+              <span>없음 (초범)</span>
+            </label>
+            <label class="radio-pill">
+              <input type="radio" name="priors" value="one" />
+              <span>1회 있음</span>
+            </label>
+            <label class="radio-pill">
+              <input type="radio" name="priors" value="multiple" />
+              <span>2회 이상</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- Q5 -->
+        <fieldset class="question-group">
+          <legend class="q-label"><span class="q-num">Q5</span> 직전 적발 연도는 언제인가요?</legend>
+          <div class="select-wrapper">
+            <select name="lastYear" id="lastYear">
+              <option value="" disabled selected>선택해 주세요</option>
+              <option value="recent">2016년 이후 (10년 이내)</option>
+              <option value="old">2016년 이전</option>
+              <option value="unknown">모름</option>
+            </select>
+            <span class="select-arrow">▾</span>
+          </div>
+        </fieldset>
+
+        <!-- Q6 -->
+        <fieldset class="question-group">
+          <legend class="q-label"><span class="q-num">Q6</span> 현재 집행유예 기간 중인가요?</legend>
+          <div class="radio-row">
+            <label class="radio-pill">
+              <input type="radio" name="probation" value="yes" />
+              <span>예</span>
+            </label>
+            <label class="radio-pill">
+              <input type="radio" name="probation" value="no" />
+              <span>아니요</span>
+            </label>
+          </div>
+        </fieldset>
+      </section>
+
+      <!-- ==================== STEP 3 ==================== -->
+      <section class="step-card" id="step3">
+        <div class="step-header">
+          <span class="step-number">STEP 03</span>
+          <h2 class="step-title">사고 및 직업 환경</h2>
+          <p class="step-desc">사고 유무와 직업 환경을 확인합니다.</p>
+        </div>
+
+        <!-- Q7 -->
+        <fieldset class="question-group">
+          <legend class="q-label"><span class="q-num">Q7</span> 적발 당시 사고가 동반되었나요?</legend>
+          <div class="radio-grid">
+            <label class="radio-card">
+              <input type="radio" name="accident" value="none" />
+              <div class="radio-body">
+                <span class="radio-icon">✅</span>
+                <span class="radio-text">사고 없음</span>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="accident" value="property" />
+              <div class="radio-body">
+                <span class="radio-icon">🚗</span>
+                <span class="radio-text">대물 사고</span>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="accident" value="injury" />
+              <div class="radio-body">
+                <span class="radio-icon">🚑</span>
+                <span class="radio-text">대인 사고</span>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="accident" value="hitrun" />
+              <div class="radio-body">
+                <span class="radio-icon">🚨</span>
+                <span class="radio-text">현장 이탈</span>
+              </div>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- Q8 -->
+        <fieldset class="question-group">
+          <legend class="q-label"><span class="q-num">Q8</span> 현재 종사 중인 직업군은?</legend>
+          <div class="radio-grid cols-2">
+            <label class="radio-card">
+              <input type="radio" name="job" value="general" />
+              <div class="radio-body">
+                <span class="radio-icon">💼</span>
+                <span class="radio-text">일반 직장인</span>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="job" value="driver" />
+              <div class="radio-body">
+                <span class="radio-icon">🚛</span>
+                <span class="radio-text">생계형 운전자</span>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="job" value="public" />
+              <div class="radio-body">
+                <span class="radio-icon">🏛️</span>
+                <span class="radio-text">공무원·교사·군인</span>
+              </div>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="job" value="professional" />
+              <div class="radio-body">
+                <span class="radio-icon">⚕️</span>
+                <span class="radio-text">전문직</span>
+              </div>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- Q9 -->
+        <fieldset class="question-group">
+          <legend class="q-label"><span class="q-num">Q9</span> 실제 운전한 거리는?</legend>
+          <div class="radio-row">
+            <label class="radio-pill">
+              <input type="radio" name="distance" value="short" />
+              <span>100m 미만</span>
+            </label>
+            <label class="radio-pill">
+              <input type="radio" name="distance" value="medium" />
+              <span>1km 미만</span>
+            </label>
+            <label class="radio-pill">
+              <input type="radio" name="distance" value="long" />
+              <span>1km 이상</span>
+            </label>
+          </div>
+        </fieldset>
+      </section>
+
+      <!-- ==================== STEP 4 ==================== -->
+      <section class="step-card" id="step4">
+        <div class="step-header">
+          <span class="step-number">STEP 04</span>
+          <h2 class="step-title">정보 입력 및 분석 요청</h2>
+          <p class="step-desc">결과서 수령을 위한 정보를 입력해 주세요.</p>
+        </div>
+
+        <!-- Q10 -->
+        <fieldset class="question-group">
+          <legend class="q-label"><span class="q-num">Q10</span> 현재 사건의 진행 단계는?</legend>
+          <div class="radio-row">
+            <label class="radio-pill">
+              <input type="radio" name="stage" value="police" />
+              <span>경찰 조사 전</span>
+            </label>
+            <label class="radio-pill">
+              <input type="radio" name="stage" value="prosecution" />
+              <span>검찰 송치</span>
+            </label>
+            <label class="radio-pill">
+              <input type="radio" name="stage" value="trial" />
+              <span>재판 기일 잡힘</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- Q11 - Contact Info -->
+        <fieldset class="question-group">
+          <legend class="q-label"><span class="q-num">Q11</span> 결과서를 수령할 정보</legend>
+          <div class="input-group">
+            <div class="input-field">
+              <label for="userName">이름</label>
+              <input type="text" id="userName" name="userName" placeholder="홍길동" autocomplete="name" />
+            </div>
+            <div class="input-field">
+              <label for="userPhone">휴대폰 번호</label>
+              <input type="tel" id="userPhone" name="userPhone" placeholder="010-0000-0000" autocomplete="tel" />
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Submit Button -->
+        <button class="submit-btn" id="submitBtn" type="button">
+          <span class="btn-icon">🔍</span>
+          <span class="btn-text">내 예상 처벌 수위 실시간 분석하기</span>
+          <span class="btn-arrow">→</span>
+        </button>
+      </section>
+
+      <!-- ==================== RESULT SCREEN ==================== -->
+      <section class="step-card result-card" id="resultCard">
+        <div class="result-content" id="resultContent">
+          <!-- Dynamically populated -->
+        </div>
+      </section>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="nav-buttons" id="navButtons">
+      <button class="nav-btn prev-btn" id="prevBtn" type="button" disabled>
+        <span>←</span> 이전
+      </button>
+      <button class="nav-btn next-btn" id="nextBtn" type="button">
+        다음 <span>→</span>
+      </button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="page-footer">
+      <p>본 예측은 참고용이며 법적 효력이 없습니다. 정확한 상담은 오정국 변호사에게 문의하세요.</p>
+      <p>© 2026 오정국 법률사무소. All Rights Reserved.</p>
+    </footer>
+  </main>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner">
+      <div class="spinner-ring"></div>
+      <div class="spinner-ring"></div>
+      <div class="spinner-ring"></div>
+      <p class="loading-text">AI가 입력 정보를 분석하고 있습니다...</p>
+      <p class="loading-sub">예상 처벌 수위 및 방어 전략 산출 중</p>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
