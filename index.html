@@ -350,6 +350,65 @@
           </div>
         </fieldset>
 
+        <!-- Q7-A: 대물 사고 세부 입력 -->
+        <div class="accident-details-container" id="propertyDetailsContainer">
+          <fieldset class="question-group sub-question">
+            <legend class="q-label"><span class="q-num">Q7-1</span> 대물 사고 피해(예상) 금액은 어느 정도인가요?</legend>
+            <div class="radio-row">
+              <label class="radio-pill">
+                <input type="radio" name="propertyDamage" value="low" />
+                <span>500만 원 미만</span>
+              </label>
+              <label class="radio-pill">
+                <input type="radio" name="propertyDamage" value="mid" />
+                <span>500만 원 ~ 2,000만 원</span>
+              </label>
+              <label class="radio-pill">
+                <input type="radio" name="propertyDamage" value="high" />
+                <span>2,000만 원 이상</span>
+              </label>
+            </div>
+          </fieldset>
+        </div>
+
+        <!-- Q7-B: 대인 사고 세부 입력 -->
+        <div class="accident-details-container" id="injuryDetailsContainer">
+          <fieldset class="question-group sub-question">
+            <legend class="q-label"><span class="q-num">Q7-1</span> 대인 사고 피해 인원은 몇 명인가요?</legend>
+            <div class="radio-row">
+              <label class="radio-pill">
+                <input type="radio" name="injuryCount" value="1" />
+                <span>1명</span>
+              </label>
+              <label class="radio-pill">
+                <input type="radio" name="injuryCount" value="2" />
+                <span>2명</span>
+              </label>
+              <label class="radio-pill">
+                <input type="radio" name="injuryCount" value="3" />
+                <span>3명 이상</span>
+              </label>
+            </div>
+          </fieldset>
+          <fieldset class="question-group sub-question" style="margin-top: 15px;">
+            <legend class="q-label"><span class="q-num">Q7-2</span> 피해자의 주된 진단 주수(상해 정도)는?</legend>
+            <div class="radio-row">
+              <label class="radio-pill">
+                <input type="radio" name="injurySeverity" value="minor" />
+                <span>전치 2주 이하</span>
+              </label>
+              <label class="radio-pill">
+                <input type="radio" name="injurySeverity" value="medium" />
+                <span>전치 2주 ~ 6주</span>
+              </label>
+              <label class="radio-pill">
+                <input type="radio" name="injurySeverity" value="severe" />
+                <span>전치 6주 이상 / 중상해</span>
+              </label>
+            </div>
+          </fieldset>
+        </div>
+
         <!-- Q8 -->
         <fieldset class="question-group">
           <legend class="q-label"><span class="q-num">Q8</span> 현재 종사 중인 직업군은?</legend>

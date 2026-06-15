@@ -1504,15 +1504,33 @@ body {
   }
 }
 
-/* ---------- Dynamic Prior Record Fields ---------- */
-.prior-records-container {
+/* ---------- Dynamic Prior Record Fields & Accident Details ---------- */
+.prior-records-container,
+.accident-details-container {
   display: none;
   margin-top: 0;
   animation: fadeInUp 0.4s var(--ease-out-expo);
 }
 
-.prior-records-container.visible {
+.prior-records-container.visible,
+.accident-details-container.visible {
   display: block;
+}
+
+.sub-question {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: 14px;
+  padding: 20px;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+.sub-question .q-label {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--navy-700);
+  margin-bottom: 12px;
 }
 
 .prior-record-entry {

@@ -73,7 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
             <option value="probation">집행유예</option>
             <option value="prison">실형 (징역)</option>
             <option value="dismissal">기소유예 / 불기소</option>
-            <option value="license_only">면허 정지/취소만</option>
             <option value="unknown">기억 안 남</option>
           </select>
         </div>
@@ -129,6 +128,32 @@ document.addEventListener('DOMContentLoaded', () => {
     if (priorCount >= 5) {
       addPriorBtn.style.display = 'none';
     }
+  });
+
+  // ---- Dynamic Accident Details ----
+  const propertyDetailsContainer = document.getElementById('propertyDetailsContainer');
+  const injuryDetailsContainer = document.getElementById('injuryDetailsContainer');
+
+  document.querySelectorAll('input[name="accident"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      const val = e.target.value;
+      
+      // Reset sub-questions inputs when accident type changes
+      document.querySelectorAll('input[name="propertyDamage"]').forEach(r => r.checked = false);
+      document.querySelectorAll('input[name="injuryCount"]').forEach(r => r.checked = false);
+      document.querySelectorAll('input[name="injurySeverity"]').forEach(r => r.checked = false);
+
+      if (val === 'property') {
+        propertyDetailsContainer.classList.add('visible');
+        injuryDetailsContainer.classList.remove('visible');
+      } else if (val === 'injury') {
+        injuryDetailsContainer.classList.add('visible');
+        propertyDetailsContainer.classList.remove('visible');
+      } else {
+        propertyDetailsContainer.classList.remove('visible');
+        injuryDetailsContainer.classList.remove('visible');
+      }
+    });
   });
 
   // ---- Step Navigation ----
@@ -205,6 +230,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return; // skip validation for hidden prior records
       }
 
+      // Skip hidden accident-details-container
+      const accidentContainer = group.closest('.accident-details-container');
+      if (accidentContainer && !accidentContainer.classList.contains('visible')) {
+        return; // skip validation for hidden accident details
+      }
+
       const radios = group.querySelectorAll('input[type="radio"]');
       const selects = group.querySelectorAll('select');
       const textInputs = group.querySelectorAll('input[type="text"], input[type="tel"]');
@@ -270,6 +301,9 @@ document.addEventListener('DOMContentLoaded', () => {
       priors: getVal('priors'),
       probation: getVal('probation'),
       accident: getVal('accident'),
+      propertyDamage: getVal('propertyDamage'),
+      injuryCount: getVal('injuryCount'),
+      injurySeverity: getVal('injurySeverity'),
       job: getVal('job'),
       distance: getVal('distance'),
       stage: getVal('stage'),
@@ -321,16 +355,17 @@ document.addEventListener('DOMContentLoaded', () => {
       d.probation === 'yes' ||
       d.accident === 'injury' ||
       d.accident === 'hitrun' ||
-      d.bac === 'refused'
+      d.bac === 'refused' ||
+      (d.accident === 'property' && d.propertyDamage === 'high')
     ) {
       return 'danger';
     }
 
     // 🟡 주의군
     if (
-      d.bac === 'mid' &&
-      d.priors === 'none' &&
-      d.accident === 'none'
+      d.bac === 'high' ||
+      d.priors === 'one' ||
+      (d.accident === 'property' && (d.propertyDamage === 'low' || d.propertyDamage === 'mid'))
     ) {
       return 'warning';
     }
@@ -407,7 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!data.priorRecords || data.priorRecords.length === 0) return '';
     const dispLabels = {
       fine: '벌금형', probation: '집행유예', prison: '실형(징역)',
-      dismissal: '기소유예/불기소', license_only: '면허 정지/취소만', unknown: '미상',
+      dismissal: '기소유예/불기소', unknown: '미상',
     };
     const items = data.priorRecords
       .map((r, i) => {
@@ -422,6 +457,47 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="section-icon">📁</span> 입력된 전력 이력
         </h3>
         <ul class="result-list">${items}</ul>
+      </div>
+    `;
+  }
+
+  function formatAccidentSummary(data) {
+    if (data.accident === 'none') {
+      return `
+        <div class="result-section">
+          <h3 class="result-section-title">
+            <span class="section-icon">💥</span> 사고 발생 여부
+          </h3>
+          <ul class="result-list">
+            <li>특이사항 없음 (단순 적발)</li>
+          </ul>
+        </div>
+      `;
+    }
+
+    let items = [];
+    if (data.accident === 'property') {
+      const damageLabels = { low: '500만 원 미만', mid: '500만 원 ~ 2,000만 원', high: '2,000만 원 이상' };
+      const damage = damageLabels[data.propertyDamage] || '미선택';
+      items.push(`<li>사고 종류: <strong>대물 사고</strong></li>`);
+      items.push(`<li>피해 규모: <strong>${damage}</strong></li>`);
+    } else if (data.accident === 'injury') {
+      const count = data.injuryCount ? `${data.injuryCount}명` : '미선택';
+      const severityLabels = { minor: '전치 2주 이하', medium: '전치 2주 ~ 6주', severe: '전치 6주 이상 / 중상해' };
+      const severity = severityLabels[data.injurySeverity] || '미선택';
+      items.push(`<li>사고 종류: <strong>대인 사고</strong></li>`);
+      items.push(`<li>피해 인원: <strong>${count}</strong></li>`);
+      items.push(`<li>상해 정도: <strong>${severity}</strong></li>`);
+    } else if (data.accident === 'hitrun') {
+      items.push(`<li>사고 종류: <strong>인명피해 후 도주 (현장 이탈/뺑소니)</strong></li>`);
+    }
+
+    return `
+      <div class="result-section">
+        <h3 class="result-section-title">
+          <span class="section-icon">💥</span> 사고 발생 내역
+        </h3>
+        <ul class="result-list">${items.join('')}</ul>
       </div>
     `;
   }
@@ -447,6 +523,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
 
       ${formatPriorSummary(data)}
+      ${formatAccidentSummary(data)}
 
       <!-- Punishment Section -->
       <div class="result-section">
@@ -533,6 +610,10 @@ document.addEventListener('DOMContentLoaded', () => {
     priorRecordsContainer.classList.remove('visible');
     addPriorBtn.style.display = 'none';
     priorCount = 0;
+
+    // Reset accident details
+    propertyDetailsContainer.classList.remove('visible');
+    injuryDetailsContainer.classList.remove('visible');
 
     // Show form
     steps.forEach(s => s.style.display = '');
