@@ -19,10 +19,34 @@ document.addEventListener('DOMContentLoaded', () => {
   const priorRecordsContainer = document.getElementById('priorRecordsContainer');
   const priorEntriesWrapper = document.getElementById('priorEntriesWrapper');
   const addPriorBtn = document.getElementById('addPriorBtn');
+  const heroSection = document.getElementById('heroSection');
+  const mainContainer = document.getElementById('mainContainer');
+  const heroCtaBtn = document.getElementById('heroCtaBtn');
 
   let currentStep = 0;
   const totalSteps = steps.length;
   let priorCount = 0;
+
+  // ---- Hero → Test Form Transition ----
+  heroCtaBtn.addEventListener('click', () => {
+    heroSection.style.opacity = '0';
+    heroSection.style.transform = 'translateY(-30px)';
+    heroSection.style.transition = 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+
+    setTimeout(() => {
+      heroSection.classList.add('hidden');
+      mainContainer.style.display = '';
+      mainContainer.style.opacity = '0';
+      mainContainer.style.transform = 'translateY(30px)';
+
+      requestAnimationFrame(() => {
+        mainContainer.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+        mainContainer.style.opacity = '1';
+        mainContainer.style.transform = 'translateY(0)';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }, 450);
+  });
 
   // ---- Dynamic Prior Records ----
   function createPriorEntry(index) {
