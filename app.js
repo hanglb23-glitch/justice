@@ -327,7 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Gather prior records
     const entries = priorEntriesWrapper.querySelectorAll('.prior-record-entry');
     entries.forEach((entry, i) => {
-      const yearInput = entry.querySelector(`input[name="priorYear_${i}"]`);
+      const yearInput = entry.querySelector(`select[name="priorYear_${i}"]`);
       const dispSelect = entry.querySelector(`select[name="priorDisposition_${i}"]`);
       data.priorRecords.push({
         year: yearInput ? yearInput.value : '',
