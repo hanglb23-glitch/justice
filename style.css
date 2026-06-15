@@ -76,7 +76,7 @@ html {
 
 body {
   font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: linear-gradient(160deg, var(--navy-900) 0%, var(--navy-800) 40%, #111827 100%);
+  background: var(--white);
   color: var(--gray-700);
   min-height: 100vh;
   line-height: 1.6;
@@ -95,15 +95,15 @@ body {
 .particle {
   position: absolute;
   border-radius: 50%;
-  opacity: 0.06;
+  opacity: 0.04;
   animation: floatParticle 20s infinite ease-in-out;
 }
 
-.p1 { width: 400px; height: 400px; background: var(--navy-400); top: -10%; left: -5%; animation-delay: 0s; }
-.p2 { width: 300px; height: 300px; background: var(--crimson-500); bottom: 10%; right: -8%; animation-delay: -5s; animation-duration: 25s; }
-.p3 { width: 200px; height: 200px; background: var(--navy-300); top: 50%; left: 60%; animation-delay: -10s; animation-duration: 18s; }
-.p4 { width: 350px; height: 350px; background: var(--navy-500); bottom: -5%; left: 30%; animation-delay: -7s; animation-duration: 22s; }
-.p5 { width: 150px; height: 150px; background: var(--crimson-400); top: 20%; right: 20%; animation-delay: -3s; animation-duration: 16s; }
+.p1 { width: 400px; height: 400px; background: var(--navy-100); top: -10%; left: -5%; animation-delay: 0s; }
+.p2 { width: 300px; height: 300px; background: var(--crimson-200); bottom: 10%; right: -8%; animation-delay: -5s; animation-duration: 25s; }
+.p3 { width: 200px; height: 200px; background: var(--navy-100); top: 50%; left: 60%; animation-delay: -10s; animation-duration: 18s; }
+.p4 { width: 350px; height: 350px; background: var(--navy-200); bottom: -5%; left: 30%; animation-delay: -7s; animation-duration: 22s; }
+.p5 { width: 150px; height: 150px; background: var(--crimson-100); top: 20%; right: 20%; animation-delay: -3s; animation-duration: 16s; }
 
 @keyframes floatParticle {
   0%, 100% { transform: translate(0, 0) scale(1); }
@@ -131,8 +131,8 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--navy-50);
+  border: 1px solid var(--navy-100);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: 100px;
@@ -145,7 +145,7 @@ body {
 .badge-text {
   font-size: 12px;
   font-weight: 600;
-  color: var(--navy-200);
+  color: var(--navy-500);
   letter-spacing: 1px;
   text-transform: uppercase;
 }
@@ -153,14 +153,14 @@ body {
 .main-title {
   font-size: clamp(1.5rem, 4.5vw, 2.1rem);
   font-weight: 800;
-  color: var(--white);
+  color: var(--navy-800);
   line-height: 1.35;
   margin-bottom: 14px;
   animation: fadeInDown 0.6s 0.1s var(--ease-out-expo) both;
 }
 
 .title-accent {
-  background: linear-gradient(135deg, var(--crimson-400), var(--crimson-300));
+  background: linear-gradient(135deg, var(--crimson-600), var(--crimson-400));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -168,7 +168,7 @@ body {
 
 .sub-title {
   font-size: clamp(0.85rem, 2.5vw, 0.95rem);
-  color: var(--gray-400);
+  color: var(--gray-500);
   font-weight: 400;
   line-height: 1.7;
   animation: fadeInDown 0.6s 0.2s var(--ease-out-expo) both;
@@ -182,7 +182,7 @@ body {
 
 .progress-bar {
   height: 4px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--gray-200);
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 16px;
@@ -215,8 +215,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.06);
-  border: 2px solid rgba(255, 255, 255, 0.12);
+  background: var(--gray-100);
+  border: 2px solid var(--gray-300);
   transition: all 0.4s var(--ease-out-expo);
 }
 
@@ -230,7 +230,7 @@ body {
 .progress-step.active .step-dot {
   background: var(--navy-500);
   border-color: var(--navy-400);
-  box-shadow: 0 0 16px rgba(35, 77, 138, 0.4);
+  box-shadow: 0 0 16px rgba(35, 77, 138, 0.25);
 }
 
 .progress-step.active .step-dot span {
@@ -254,11 +254,12 @@ body {
 }
 
 .progress-step.active .step-label {
-  color: var(--navy-200);
+  color: var(--navy-600);
+  font-weight: 600;
 }
 
 .progress-step.completed .step-label {
-  color: var(--gray-400);
+  color: var(--gray-600);
 }
 
 /* ---------- Card Container ---------- */
@@ -277,7 +278,8 @@ body {
   background: var(--white);
   border-radius: 20px;
   padding: 32px 28px;
-  box-shadow: var(--shadow-xl);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--gray-200);
   opacity: 0;
   visibility: hidden;
   transform: translateX(60px) scale(0.96);
@@ -631,14 +633,14 @@ body {
 }
 
 .prev-btn {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: var(--gray-400);
+  background: var(--gray-100);
+  border: 1px solid var(--gray-300);
+  color: var(--gray-600);
 }
 
 .prev-btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.12);
-  color: var(--white);
+  background: var(--gray-200);
+  color: var(--navy-700);
   transform: translateX(-2px);
 }
 
@@ -668,12 +670,12 @@ body {
   text-align: center;
   margin-top: 40px;
   padding-top: 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid var(--gray-200);
 }
 
 .page-footer p {
   font-size: 0.75rem;
-  color: var(--gray-500);
+  color: var(--gray-400);
   line-height: 1.8;
 }
 
@@ -1129,5 +1131,139 @@ body {
 
   .radio-text {
     font-size: 0.75rem;
+  }
+}
+
+/* ---------- Dynamic Prior Record Fields ---------- */
+.prior-records-container {
+  display: none;
+  margin-top: 0;
+  animation: fadeInUp 0.4s var(--ease-out-expo);
+}
+
+.prior-records-container.visible {
+  display: block;
+}
+
+.prior-record-entry {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 12px;
+  animation: fadeInUp 0.4s var(--ease-out-expo);
+}
+
+.prior-record-entry .entry-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--navy-600);
+  margin-bottom: 14px;
+}
+
+.prior-record-entry .entry-label .entry-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: var(--navy-500);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.prior-fields-row {
+  display: flex;
+  gap: 12px;
+}
+
+.prior-fields-row .input-field {
+  flex: 1;
+}
+
+.prior-fields-row .input-field select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 2px solid var(--gray-200);
+  background: var(--white);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--gray-700);
+  appearance: none;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-out-expo);
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2399a1b3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 36px;
+}
+
+.prior-fields-row .input-field select:focus {
+  outline: none;
+  border-color: var(--navy-400);
+  box-shadow: 0 0 0 3px rgba(35, 77, 138, 0.12);
+}
+
+.prior-fields-row .input-field input[type="number"] {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 2px solid var(--gray-200);
+  background: var(--white);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--gray-700);
+  transition: all 0.3s var(--ease-out-expo);
+  -moz-appearance: textfield;
+}
+
+.prior-fields-row .input-field input[type="number"]::-webkit-outer-spin-button,
+.prior-fields-row .input-field input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.prior-fields-row .input-field input[type="number"]:focus {
+  outline: none;
+  border-color: var(--navy-400);
+  box-shadow: 0 0 0 3px rgba(35, 77, 138, 0.12);
+}
+
+.add-prior-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 2px dashed var(--gray-300);
+  border-radius: 10px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--gray-500);
+  cursor: pointer;
+  transition: all 0.3s var(--ease-out-expo);
+  margin-top: 4px;
+}
+
+.add-prior-btn:hover {
+  border-color: var(--navy-400);
+  color: var(--navy-500);
+  background: var(--navy-50);
+}
+
+@media (max-width: 600px) {
+  .prior-fields-row {
+    flex-direction: column;
+    gap: 10px;
   }
 }

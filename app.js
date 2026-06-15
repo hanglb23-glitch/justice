@@ -16,9 +16,96 @@ document.addEventListener('DOMContentLoaded', () => {
   const progressWrapper = document.getElementById('progressWrapper');
   const submitBtn = document.getElementById('submitBtn');
   const loadingOverlay = document.getElementById('loadingOverlay');
+  const priorRecordsContainer = document.getElementById('priorRecordsContainer');
+  const priorEntriesWrapper = document.getElementById('priorEntriesWrapper');
+  const addPriorBtn = document.getElementById('addPriorBtn');
 
   let currentStep = 0;
   const totalSteps = steps.length;
+  let priorCount = 0;
+
+  // ---- Dynamic Prior Records ----
+  function createPriorEntry(index) {
+    const ordinal = index + 1;
+    const entry = document.createElement('div');
+    entry.className = 'prior-record-entry';
+    entry.dataset.index = index;
+    entry.innerHTML = `
+      <div class="entry-label">
+        <span class="entry-badge">${ordinal}</span>
+        ${ordinal}차 적발 이력
+      </div>
+      <div class="prior-fields-row">
+        <div class="input-field">
+          <label for="priorYear_${index}">적발 연도</label>
+          <input type="number" id="priorYear_${index}" name="priorYear_${index}"
+                 placeholder="예: 2020" min="1990" max="2026" />
+        </div>
+        <div class="input-field">
+          <label for="priorDisposition_${index}">당시 처분</label>
+          <select id="priorDisposition_${index}" name="priorDisposition_${index}">
+            <option value="" disabled selected>처분 선택</option>
+            <option value="fine">벌금형</option>
+            <option value="probation">집행유예</option>
+            <option value="prison">실형 (징역)</option>
+            <option value="dismissal">기소유예 / 불기소</option>
+            <option value="license_only">면허 정지/취소만</option>
+            <option value="unknown">기억 안 남</option>
+          </select>
+        </div>
+      </div>
+    `;
+    return entry;
+  }
+
+  function updatePriorFields(count) {
+    priorEntriesWrapper.innerHTML = '';
+    priorCount = 0;
+
+    if (count === 0) {
+      priorRecordsContainer.classList.remove('visible');
+      addPriorBtn.style.display = 'none';
+      return;
+    }
+
+    priorRecordsContainer.classList.add('visible');
+
+    for (let i = 0; i < count; i++) {
+      priorEntriesWrapper.appendChild(createPriorEntry(i));
+      priorCount++;
+    }
+
+    // Show "add more" only for 2+ priors
+    if (count >= 2) {
+      addPriorBtn.style.display = '';
+    } else {
+      addPriorBtn.style.display = 'none';
+    }
+  }
+
+  // Listen on Q4 radio changes
+  document.querySelectorAll('input[name="priors"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      const val = e.target.value;
+      if (val === 'none') {
+        updatePriorFields(0);
+      } else if (val === 'one') {
+        updatePriorFields(1);
+      } else if (val === 'multiple') {
+        updatePriorFields(2);
+      }
+    });
+  });
+
+  // Add prior button
+  addPriorBtn.addEventListener('click', () => {
+    if (priorCount >= 5) return; // Max 5
+    priorEntriesWrapper.appendChild(createPriorEntry(priorCount));
+    priorCount++;
+    if (priorCount >= 5) {
+      addPriorBtn.style.display = 'none';
+    }
+  });
 
   // ---- Step Navigation ----
   function goToStep(index, direction = 'next') {
@@ -88,8 +175,14 @@ document.addEventListener('DOMContentLoaded', () => {
     groups.forEach(group => {
       group.classList.remove('invalid');
 
+      // Skip hidden prior-records-container
+      const priorContainer = group.closest('.prior-records-container');
+      if (priorContainer && !priorContainer.classList.contains('visible')) {
+        return; // skip validation for hidden prior records
+      }
+
       const radios = group.querySelectorAll('input[type="radio"]');
-      const select = group.querySelector('select');
+      const selects = group.querySelectorAll('select');
       const textInputs = group.querySelectorAll('input[type="text"], input[type="tel"]');
 
       if (radios.length > 0) {
@@ -101,13 +194,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      if (select && !select.value) {
-        group.classList.add('invalid');
-        valid = false;
-      }
+      // For the prior records entries — validate each visible entry individually
+      // We don't mark the whole fieldset invalid, just check year entries
+      // (lenient: only require year if prior records are visible)
 
       textInputs.forEach(input => {
-        // Only validate name (phone is optional-ish but we'll be lenient)
         if (input.id === 'userName' && !input.value.trim()) {
           group.classList.add('invalid');
           valid = false;
@@ -116,7 +207,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (!valid) {
-      // Remove invalid highlight after some time
       setTimeout(() => {
         groups.forEach(g => g.classList.remove('invalid'));
       }, 2000);
@@ -147,11 +237,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return el ? el.value : '';
   }
 
-  function getSelectVal(id) {
-    const el = document.getElementById(id);
-    return el ? el.value : '';
-  }
-
   function runAnalysis() {
     // Gather all values
     const data = {
@@ -159,7 +244,6 @@ document.addEventListener('DOMContentLoaded', () => {
       rinse: getVal('rinse'),
       wait20: getVal('wait20'),
       priors: getVal('priors'),
-      lastYear: getSelectVal('lastYear'),
       probation: getVal('probation'),
       accident: getVal('accident'),
       job: getVal('job'),
@@ -167,7 +251,32 @@ document.addEventListener('DOMContentLoaded', () => {
       stage: getVal('stage'),
       name: document.getElementById('userName').value.trim(),
       phone: document.getElementById('userPhone').value.trim(),
+      priorRecords: [],
     };
+
+    // Gather prior records
+    const entries = priorEntriesWrapper.querySelectorAll('.prior-record-entry');
+    entries.forEach((entry, i) => {
+      const yearInput = entry.querySelector(`input[name="priorYear_${i}"]`);
+      const dispSelect = entry.querySelector(`select[name="priorDisposition_${i}"]`);
+      data.priorRecords.push({
+        year: yearInput ? yearInput.value : '',
+        disposition: dispSelect ? dispSelect.value : '',
+      });
+    });
+
+    // Determine lastYear (recent / old) based on earliest prior year
+    if (data.priorRecords.length > 0) {
+      const years = data.priorRecords.map(r => parseInt(r.year)).filter(y => !isNaN(y));
+      if (years.length > 0) {
+        const mostRecent = Math.max(...years);
+        data.lastYear = mostRecent >= 2016 ? 'recent' : 'old';
+      } else {
+        data.lastYear = 'unknown';
+      }
+    } else {
+      data.lastYear = '';
+    }
 
     // Show loading
     loadingOverlay.classList.add('active');
@@ -270,6 +379,29 @@ document.addEventListener('DOMContentLoaded', () => {
     },
   };
 
+  function formatPriorSummary(data) {
+    if (!data.priorRecords || data.priorRecords.length === 0) return '';
+    const dispLabels = {
+      fine: '벌금형', probation: '집행유예', prison: '실형(징역)',
+      dismissal: '기소유예/불기소', license_only: '면허 정지/취소만', unknown: '미상',
+    };
+    const items = data.priorRecords
+      .map((r, i) => {
+        const year = r.year || '미입력';
+        const disp = dispLabels[r.disposition] || '미선택';
+        return `<li>${i + 1}차: ${year}년 — ${disp}</li>`;
+      })
+      .join('');
+    return `
+      <div class="result-section">
+        <h3 class="result-section-title">
+          <span class="section-icon">📁</span> 입력된 전력 이력
+        </h3>
+        <ul class="result-list">${items}</ul>
+      </div>
+    `;
+  }
+
   function showResult(type, data) {
     const r = RESULTS[type];
 
@@ -289,6 +421,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="result-badge ${r.badgeClass}">${r.emoji} ${r.badge}</div>
         <p class="result-title">${r.title}</p>
       </div>
+
+      ${formatPriorSummary(data)}
 
       <!-- Punishment Section -->
       <div class="result-section">
@@ -370,6 +504,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('userName').value = '';
     document.getElementById('userPhone').value = '';
 
+    // Reset prior records
+    priorEntriesWrapper.innerHTML = '';
+    priorRecordsContainer.classList.remove('visible');
+    addPriorBtn.style.display = 'none';
+    priorCount = 0;
+
     // Show form
     steps.forEach(s => s.style.display = '');
     navButtons.classList.remove('hidden');
@@ -383,7 +523,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // ---- Auto-advance on selection (delight) ----
   document.querySelectorAll('input[type="radio"]').forEach(radio => {
     radio.addEventListener('change', () => {
-      // brief visual feedback on the parent card
       const body = radio.closest('.radio-card, .radio-pill');
       if (body) {
         body.style.transition = 'transform 0.15s var(--ease-out-back)';

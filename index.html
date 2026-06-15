@@ -168,19 +168,18 @@
           </div>
         </fieldset>
 
-        <!-- Q5 -->
-        <fieldset class="question-group">
-          <legend class="q-label"><span class="q-num">Q5</span> 직전 적발 연도는 언제인가요?</legend>
-          <div class="select-wrapper">
-            <select name="lastYear" id="lastYear">
-              <option value="" disabled selected>선택해 주세요</option>
-              <option value="recent">2016년 이후 (10년 이내)</option>
-              <option value="old">2016년 이전</option>
-              <option value="unknown">모름</option>
-            </select>
-            <span class="select-arrow">▾</span>
-          </div>
-        </fieldset>
+        <!-- Q5 / Q5-1: Dynamic prior details -->
+        <div class="prior-records-container" id="priorRecordsContainer">
+          <fieldset class="question-group">
+            <legend class="q-label"><span class="q-num">Q5</span> 과거 적발 연도와 처분 내역을 입력해 주세요.</legend>
+            <div id="priorEntriesWrapper">
+              <!-- Dynamically generated -->
+            </div>
+            <button type="button" class="add-prior-btn" id="addPriorBtn" style="display:none;">
+              ＋ 전력 추가 입력
+            </button>
+          </fieldset>
+        </div>
 
         <!-- Q6 -->
         <fieldset class="question-group">
