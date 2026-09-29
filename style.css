@@ -716,6 +716,20 @@ body {
   margin-bottom: 12px;
 }
 
+.q-multi-hint {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 100px;
+  background: var(--navy-50);
+  border: 1px solid var(--navy-100);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--navy-500);
+  letter-spacing: 0.3px;
+  margin-left: 2px;
+}
+
 .q-num {
   display: inline-flex;
   align-items: center;
@@ -1327,41 +1341,50 @@ body {
   flex-wrap: wrap;
 }
 
-.cta-btn {
-  display: inline-flex;
+/* 직통 전화번호 표시 */
+.cta-phone-wrap {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 14px 28px;
-  border-radius: 14px;
-  font-family: inherit;
-  font-size: 0.9rem;
-  font-weight: 700;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.cta-phone-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--gray-400);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.cta-phone-number {
+  display: inline-block;
+  font-size: clamp(1.8rem, 6vw, 2.4rem);
+  font-weight: 900;
+  color: var(--white);
+  letter-spacing: 3px;
   text-decoration: none;
-  cursor: pointer;
-  border: none;
+  padding: 14px 32px;
+  border-radius: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.07);
   transition: all 0.3s var(--ease-out-expo);
+  line-height: 1;
 }
 
-.cta-btn.kakao {
-  background: #FEE500;
-  color: #3C1E1E;
-}
-
-.cta-btn.kakao:hover {
-  background: #fdd835;
+.cta-phone-number:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.4);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(254, 229, 0, 0.3);
-}
-
-.cta-btn.phone {
-  background: var(--crimson-500);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   color: var(--white);
 }
 
-.cta-btn.phone:hover {
-  background: var(--crimson-400);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(198, 40, 66, 0.3);
+.cta-phone-sub {
+  font-size: 0.78rem;
+  color: var(--gray-400);
+  letter-spacing: 0.2px;
 }
 
 /* Retry */

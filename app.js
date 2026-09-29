@@ -142,24 +142,35 @@ document.addEventListener('DOMContentLoaded', () => {
   const propertyDetailsContainer = document.getElementById('propertyDetailsContainer');
   const injuryDetailsContainer = document.getElementById('injuryDetailsContainer');
 
-  document.querySelectorAll('input[name="accident"]').forEach(radio => {
-    radio.addEventListener('change', (e) => {
+  document.querySelectorAll('input[name="accident"]').forEach(checkbox => {
+    checkbox.addEventListener('change', (e) => {
       const val = e.target.value;
-      
-      // Reset sub-questions inputs when accident type changes
-      document.querySelectorAll('input[name="propertyDamage"]').forEach(r => r.checked = false);
-      document.querySelectorAll('input[name="injuryCount"]').forEach(r => r.checked = false);
-      document.querySelectorAll('input[name="injurySeverity"]').forEach(r => r.checked = false);
+      const allAccident = document.querySelectorAll('input[name="accident"]');
 
-      if (val === 'property') {
+      // 상호 배타: "사고 없음" ↔ 나머지
+      if (val === 'none' && e.target.checked) {
+        allAccident.forEach(cb => { if (cb.value !== 'none') cb.checked = false; });
+      } else if (val !== 'none' && e.target.checked) {
+        const noneCb = document.querySelector('input[name="accident"][value="none"]');
+        if (noneCb) noneCb.checked = false;
+      }
+
+      // 체크 상태 기준으로 세부 컨테이너 표시/숨김
+      const checked = Array.from(document.querySelectorAll('input[name="accident"]:checked')).map(cb => cb.value);
+
+      if (checked.includes('property')) {
         propertyDetailsContainer.classList.add('visible');
-        injuryDetailsContainer.classList.remove('visible');
-      } else if (val === 'injury') {
-        injuryDetailsContainer.classList.add('visible');
-        propertyDetailsContainer.classList.remove('visible');
       } else {
         propertyDetailsContainer.classList.remove('visible');
+        document.querySelectorAll('input[name="propertyDamage"]').forEach(r => r.checked = false);
+      }
+
+      if (checked.includes('injury')) {
+        injuryDetailsContainer.classList.add('visible');
+      } else {
         injuryDetailsContainer.classList.remove('visible');
+        document.querySelectorAll('input[name="injuryCount"]').forEach(r => r.checked = false);
+        document.querySelectorAll('input[name="injurySeverity"]').forEach(r => r.checked = false);
       }
     });
   });
@@ -245,10 +256,18 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const radios = group.querySelectorAll('input[type="radio"]');
+      const checkboxGroup = group.dataset.requireCheck === 'true';
       const selects = group.querySelectorAll('select');
-      const textInputs = group.querySelectorAll('input[type="text"], input[type="tel"]');
+      const textInputs = group.querySelectorAll('input[type="text"], input[type="tel"], input[type="email"]');
 
-      if (radios.length > 0) {
+      if (checkboxGroup) {
+        // 체크박스 그룹: 최소 1개 이상 선택 필수
+        const anyChecked = group.querySelector('input[type="checkbox"]:checked');
+        if (!anyChecked) {
+          group.classList.add('invalid');
+          valid = false;
+        }
+      } else if (radios.length > 0) {
         const name = radios[0].name;
         const checked = group.querySelector(`input[name="${name}"]:checked`);
         if (!checked) {
@@ -266,7 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       textInputs.forEach(input => {
-        if (input.id === 'userName' && !input.value.trim()) {
+        if (!input.value.trim()) {
           group.classList.add('invalid');
           valid = false;
         }
@@ -312,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
       wait20: getVal('wait20'),
       priors: getVal('priors'),
       probation: getVal('probation'),
-      accident: getVal('accident'),
+      accidents: Array.from(document.querySelectorAll('input[name="accident"]:checked')).map(cb => cb.value),
       propertyDamage: getVal('propertyDamage'),
       injuryCount: getVal('injuryCount'),
       injurySeverity: getVal('injurySeverity'),
@@ -321,6 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
       stage: getVal('stage'),
       name: document.getElementById('userName').value.trim(),
       phone: document.getElementById('userPhone').value.trim(),
+      email: document.getElementById('userEmail').value.trim(),
       priorRecords: [],
     };
 
@@ -348,27 +368,70 @@ document.addEventListener('DOMContentLoaded', () => {
       data.lastYear = '';
     }
 
+    // 결과 계산 및 위험도/요약 문자열 생성
+    const result = calculateResult(data);
+    data.riskLevel = result === 'danger' ? '위험군 (실형/구속 가능성)' :
+                     result === 'warning' ? '주의군 (벌금/집행유예)' : '안전군 (기소유예)';
+                     
+    // 한국어 변환 매핑
+    const bacMap = { 'low': '0.03% ~ 0.08% 미만', 'mid': '0.08% ~ 0.2% 미만', 'high': '0.2% 이상', 'refused': '측정 거부' };
+    const priorsMap = { 'none': '초범', 'one': '2회 (이진아웃)', 'multiple': '3회 이상' };
+    const accMap = { 'none': '사고 없음', 'property': '대물 사고', 'injury': '대인 사고', 'hitrun': '현장 이탈(도주)' };
+    const stageMap = { 'police': '경찰 조사 전', 'prosecution': '검찰 송치', 'trial': '재판 기일 잡힘' };
+    
+    const korBac = bacMap[data.bac] || data.bac;
+    const korPriors = priorsMap[data.priors] || data.priors;
+    const korStage = stageMap[data.stage] || data.stage;
+    const korAcc = data.accidents.map(a => accMap[a] || a).join(', ');
+
+    data.summary = `혈중알코올농도: ${korBac}\n음주운전 전력: ${korPriors}\n사고종류: ${korAcc || '없음'}\n진행단계: ${korStage}`;
+
     // Show loading
     loadingOverlay.classList.add('active');
 
-    // Simulate analysis delay (1.8s)
-    setTimeout(() => {
-      loadingOverlay.classList.remove('active');
-      const result = calculateResult(data);
-      showResult(result, data);
-    }, 1800);
+    // 웹 앱 URL (사용자가 제공하면 이 변수에 넣어야 합니다)
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxEG1AOpi8apKvqKlnHl0MdW9Kvv7Xd0AZ0n_7eY9jTjT6dBplkGz8X_aJR_8WamilPOw/exec";
+
+    if (SCRIPT_URL !== "여기에_웹앱_URL을_붙여넣으세요") {
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(apiResult => {
+        console.log("전송 성공:", apiResult);
+        setTimeout(() => {
+          loadingOverlay.classList.remove('active');
+          showResult(result, data);
+        }, 800);
+      })
+      .catch(err => {
+        console.error("전송 오류:", err);
+        loadingOverlay.classList.remove('active');
+        showResult(result, data);
+      });
+    } else {
+      // 로컬 테스트용 가짜 지연
+      setTimeout(() => {
+        loadingOverlay.classList.remove('active');
+        showResult(result, data);
+      }, 1800);
+    }
   }
 
   // ---- Calculation Logic ----
   function calculateResult(d) {
+    const acc = d.accidents || [];
+
     // 🔴 위험군
     if (
       d.priors === 'multiple' ||
       d.probation === 'yes' ||
-      d.accident === 'injury' ||
-      d.accident === 'hitrun' ||
+      acc.includes('injury') ||
+      acc.includes('hitrun') ||
       d.bac === 'refused' ||
-      (d.accident === 'property' && d.propertyDamage === 'high')
+      (acc.includes('property') && d.propertyDamage === 'high')
     ) {
       return 'danger';
     }
@@ -377,7 +440,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (
       d.bac === 'high' ||
       d.priors === 'one' ||
-      (d.accident === 'property' && (d.propertyDamage === 'low' || d.propertyDamage === 'mid'))
+      (acc.includes('property') && (d.propertyDamage === 'low' || d.propertyDamage === 'mid'))
     ) {
       return 'warning';
     }
@@ -474,7 +537,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function formatAccidentSummary(data) {
-    if (data.accident === 'none') {
+    const acc = data.accidents || [];
+
+    if (acc.length === 0 || acc.includes('none')) {
       return `
         <div class="result-section">
           <h3 class="result-section-title">
@@ -488,20 +553,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     let items = [];
-    if (data.accident === 'property') {
+    if (acc.includes('property')) {
       const damageLabels = { low: '500만 원 미만', mid: '500만 원 ~ 2,000만 원', high: '2,000만 원 이상' };
       const damage = damageLabels[data.propertyDamage] || '미선택';
       items.push(`<li>사고 종류: <strong>대물 사고</strong></li>`);
       items.push(`<li>피해 규모: <strong>${damage}</strong></li>`);
-    } else if (data.accident === 'injury') {
+    }
+    if (acc.includes('injury')) {
       const count = data.injuryCount ? `${data.injuryCount}명` : '미선택';
       const severityLabels = { minor: '전치 2주 이하', medium: '전치 2주 ~ 6주', severe: '전치 6주 이상 / 중상해' };
       const severity = severityLabels[data.injurySeverity] || '미선택';
       items.push(`<li>사고 종류: <strong>대인 사고</strong></li>`);
       items.push(`<li>피해 인원: <strong>${count}</strong></li>`);
       items.push(`<li>상해 정도: <strong>${severity}</strong></li>`);
-    } else if (data.accident === 'hitrun') {
-      items.push(`<li>사고 종류: <strong>인명피해 후 도주 (현장 이탈/뺑소니)</strong></li>`);
+    }
+    if (acc.includes('hitrun')) {
+      items.push(`<li>사고 종류: <strong>현장 이탈 (도주 / 뺑소니)</strong></li>`);
     }
 
     return `
@@ -560,14 +627,11 @@ document.addEventListener('DOMContentLoaded', () => {
       <!-- CTA Section -->
       <div class="result-cta">
         <p class="cta-title">오정국 변호사에게 1:1 긴급 비밀 상담 신청하기</p>
-        <p class="cta-subtitle">${data.name ? data.name + '님, ' : ''}지금 바로 전문 변호사의 맞춤 상담을 받아보세요.</p>
-        <div class="cta-buttons">
-          <a href="#" class="cta-btn kakao" onclick="return false;">
-            💬 카카오톡 상담
-          </a>
-          <a href="tel:010-0000-0000" class="cta-btn phone">
-            📞 전화 상담
-          </a>
+        <p class="cta-subtitle">지금 바로 전문 변호사의 맞춤 상담을 받아보세요.</p>
+        <div class="cta-phone-wrap">
+          <span class="cta-phone-label">📞 변호사 직통</span>
+          <a href="tel:010-6733-7334" class="cta-phone-number">010-6733-7334</a>
+          <span class="cta-phone-sub">전화 연결 즉시 오정국 변호사가 직접 받습니다</span>
         </div>
       </div>
 
@@ -613,9 +677,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Reset all inputs
     document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+    document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
     document.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
-    document.getElementById('userName').value = '';
-    document.getElementById('userPhone').value = '';
 
     // Reset prior records
     priorEntriesWrapper.innerHTML = '';
@@ -649,18 +712,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ---- Phone input formatting ----
-  const phoneInput = document.getElementById('userPhone');
-  phoneInput.addEventListener('input', (e) => {
-    let v = e.target.value.replace(/[^0-9]/g, '');
-    if (v.length > 11) v = v.slice(0, 11);
-    if (v.length >= 8) {
-      v = v.slice(0, 3) + '-' + v.slice(3, 7) + '-' + v.slice(7);
-    } else if (v.length >= 4) {
-      v = v.slice(0, 3) + '-' + v.slice(3);
-    }
-    e.target.value = v;
-  });
 
   // ---- Initialize ----
   updateUI();

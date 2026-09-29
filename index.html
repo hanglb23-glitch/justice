@@ -124,7 +124,7 @@
 
       <!-- Footer -->
       <footer class="hero-footer">
-        <p>© 2026 오정국 법률사무소. All Rights Reserved.</p>
+        <p>© 2026 법무법인 화담 오정국 변호사. All Rights Reserved.</p>
       </footer>
     </div>
   </section>
@@ -316,32 +316,32 @@
         </div>
 
         <!-- Q7 -->
-        <fieldset class="question-group">
-          <legend class="q-label"><span class="q-num">Q7</span> 적발 당시 사고가 동반되었나요?</legend>
+        <fieldset class="question-group" data-require-check="true">
+          <legend class="q-label"><span class="q-num">Q7</span> 적발 당시 사고가 동반되었나요? <span class="q-multi-hint">복수 선택 가능</span></legend>
           <div class="radio-grid">
             <label class="radio-card">
-              <input type="radio" name="accident" value="none" />
+              <input type="checkbox" name="accident" value="none" />
               <div class="radio-body">
                 <span class="radio-icon">✅</span>
                 <span class="radio-text">사고 없음</span>
               </div>
             </label>
             <label class="radio-card">
-              <input type="radio" name="accident" value="property" />
+              <input type="checkbox" name="accident" value="property" />
               <div class="radio-body">
                 <span class="radio-icon">🚗</span>
                 <span class="radio-text">대물 사고</span>
               </div>
             </label>
             <label class="radio-card">
-              <input type="radio" name="accident" value="injury" />
+              <input type="checkbox" name="accident" value="injury" />
               <div class="radio-body">
                 <span class="radio-icon">🚑</span>
                 <span class="radio-text">대인 사고</span>
               </div>
             </label>
             <label class="radio-card">
-              <input type="radio" name="accident" value="hitrun" />
+              <input type="checkbox" name="accident" value="hitrun" />
               <div class="radio-body">
                 <span class="radio-icon">🚨</span>
                 <span class="radio-text">현장 이탈</span>
@@ -468,8 +468,8 @@
       <section class="step-card" id="step4">
         <div class="step-header">
           <span class="step-number">STEP 04</span>
-          <h2 class="step-title">정보 입력 및 분석 요청</h2>
-          <p class="step-desc">결과서 수령을 위한 정보를 입력해 주세요.</p>
+          <h2 class="step-title">분석 요청</h2>
+          <p class="step-desc">현재 사건의 진행 단계를 선택하고 분석을 시작하세요.</p>
         </div>
 
         <!-- Q10 -->
@@ -494,14 +494,19 @@
         <!-- Q11 - Contact Info -->
         <fieldset class="question-group">
           <legend class="q-label"><span class="q-num">Q11</span> 결과서를 수령할 정보</legend>
-          <div class="input-group">
-            <div class="input-field">
+          <p class="step-desc" style="margin-bottom: 12px; font-size: 0.8rem;">입력하신 정보로 상세 분석 결과가 발송됩니다.</p>
+          <div class="input-group" style="flex-wrap: wrap;">
+            <div class="input-field" style="min-width: 45%;">
               <label for="userName">이름</label>
               <input type="text" id="userName" name="userName" placeholder="홍길동" autocomplete="name" />
             </div>
-            <div class="input-field">
+            <div class="input-field" style="min-width: 45%;">
               <label for="userPhone">휴대폰 번호</label>
               <input type="tel" id="userPhone" name="userPhone" placeholder="010-0000-0000" autocomplete="tel" />
+            </div>
+            <div class="input-field" style="width: 100%; margin-top: 12px;">
+              <label for="userEmail">이메일 주소</label>
+              <input type="email" id="userEmail" name="userEmail" placeholder="example@email.com" autocomplete="email" />
             </div>
           </div>
         </fieldset>
@@ -535,7 +540,7 @@
     <!-- Footer -->
     <footer class="page-footer">
       <p>본 예측은 참고용이며 법적 효력이 없습니다. 정확한 상담은 오정국 변호사에게 문의하세요.</p>
-      <p>© 2026 오정국 법률사무소. All Rights Reserved.</p>
+      <p>© 2026 법무법인 화담 오정국 변호사. All Rights Reserved.</p>
     </footer>
   </main>
 
