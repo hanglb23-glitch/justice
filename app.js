@@ -390,7 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadingOverlay.classList.add('active');
 
     // 웹 앱 URL (사용자가 제공하면 이 변수에 넣어야 합니다)
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxEG1AOpi8apKvqKlnHl0MdW9Kvv7Xd0AZ0n_7eY9jTjT6dBplkGz8X_aJR_8WamilPOw/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby7R92iPSGYnzO1Fmsl3grlNdzNAL59zIkOGvuNEs6JwAttynNz-sRcf9NP2bkc8Z_D/exec";
 
     if (SCRIPT_URL !== "여기에_웹앱_URL을_붙여넣으세요") {
       fetch(SCRIPT_URL, {
